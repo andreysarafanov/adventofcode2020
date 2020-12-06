@@ -7,7 +7,8 @@
     "sourceMap": false,
     "downlevelIteration": true,
     "lib": ["es6", "DOM"],
-    "strict": true
+    "strict": true,
+    "target": "es5"
   },
   "include": ["src/**/*.ts"]
 }
