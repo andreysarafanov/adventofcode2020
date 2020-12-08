@@ -1,4 +1,4 @@
-import { executeUntilOpIsExecutedTwice } from "./game-console/game-console";
+import { executeUntilOpIsExecutedTwice, fixOperationsAndGetAccumulator } from "./game-console/game-console";
 
 const input = `acc +17
 acc +37
@@ -627,3 +627,5 @@ acc +22
 jmp +1`;
 
 console.log(executeUntilOpIsExecutedTwice(input));
+
+console.log(fixOperationsAndGetAccumulator(input));
