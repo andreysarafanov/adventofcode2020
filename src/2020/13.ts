@@ -1,6 +1,8 @@
-import { getNearestBusIdMultipliedByMinutesToWait } from "./shuttle-search/shuttle-search";
+import { getNearestBusIdMultipliedByMinutesToWait, part2 } from "./shuttle-search/shuttle-search";
 
 const input = `1000066
-13,x,x,41,x,x,x,37,x,x,x,x,x,659,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,19,x,x,x,23,x,x,x,x,x,29,x,409,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,17`;
+67,7,59,61`;
 
 console.log(getNearestBusIdMultipliedByMinutesToWait(input));
+
+ part2(input);
