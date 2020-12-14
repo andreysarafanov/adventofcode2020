@@ -6,7 +6,7 @@
     "preserveConstEnums": true,
     "sourceMap": false,
     "downlevelIteration": true,
-    "lib": ["es6", "DOM"],
+    "lib": ["es2017", "DOM"],
     "strict": true,
     "target": "es5"
   },
