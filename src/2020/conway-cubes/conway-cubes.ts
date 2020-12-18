@@ -11,7 +11,7 @@ type SpaceState = {
     zLimits: {from: number, to: number};
 }
 
-export function get4dActiveCubesAfterNStepsgetActiveCubesAfterNSteps(input: string, n:number): number {
+export function getActiveCubesAfterNSteps(input: string, n:number): number {
     let state = parseInitialState(input);
     console.log(`INITIAL`);
     printState(state);
