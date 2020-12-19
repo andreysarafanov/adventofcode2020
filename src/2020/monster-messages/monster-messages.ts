@@ -1,11 +1,11 @@
 type LetterRule = {type: "letter", letter: string};
 type RedirectRule = {type: "redirect", redirectTo: number};
-type ConcatRule = {type: "concat", parts: [number, number]};
+type ConcatRule = {type: "concat", parts: number[]};
 
 type SimpleRule = LetterRule | RedirectRule | ConcatRule;
 
 type SingleRule = {type: "single", inner: SimpleRule};
-type EitherRule = {type: "either", rules: [SimpleRule, SimpleRule]};
+type EitherRule = {type: "either", rules: SimpleRule[]};
 
 type Rule = SingleRule | EitherRule;
 type RuleByKey = {[key: number]: Rule};
@@ -19,8 +19,7 @@ function checkRule(line: string, from: number, to: number, rule: Rule, allRules:
     if (rule.type === "single") {
         return checkSimpleRule(line, from, to, rule.inner, allRules);
     } else {
-        return checkSimpleRule(line, from, to, rule.rules[0], allRules) ||
-               checkSimpleRule(line, from, to, rule.rules[1], allRules);
+        return rule.rules.some(innerRule => checkSimpleRule(line, from, to, innerRule, allRules))
     }
 }
 
@@ -33,6 +32,12 @@ function checkSimpleRule(line: string, from: number, to: number, rule: SimpleRul
 }
 
 function checkConcatRule(line: string, from: number, to: number, rule: ConcatRule, allRules: RuleByKey): boolean {
+    return rule.parts.length > 2
+        ? checkLongConcatRule(line, from, to, rule, allRules)
+        : checkShortConcatRule(line, from, to, rule, allRules);
+}
+
+function checkShortConcatRule(line: string, from: number, to: number, rule: ConcatRule, allRules: RuleByKey): boolean {
     const leftRule = allRules[rule.parts[0]];
     const rightRule = allRules[rule.parts[1]];
     if (leftRule.type === "single" && leftRule.inner.type === "letter" && rightRule.type === "single" && rightRule.inner.type === "letter") {
@@ -49,6 +54,19 @@ function checkConcatRule(line: string, from: number, to: number, rule: ConcatRul
         }
         return false;
     }
+}
+
+function checkLongConcatRule(line: string, from: number, to: number, rule: ConcatRule, allRules: RuleByKey): boolean {
+    // no letter rules here
+
+    const leftRule = allRules[rule.parts[0]];
+    const rightRule: Rule = {type: "single", inner: {type: "concat", parts: rule.parts.slice(1)}};
+    for (let i = from; i < to; i++) {
+        if (checkRule(line, from, i, leftRule, allRules) && checkRule(line, i+1, to, rightRule, allRules)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function checkLetterRule(line: string, from: number, to: number, rule: LetterRule, allRules: RuleByKey): boolean {
@@ -69,11 +87,11 @@ function parseRules(input: string): RuleByKey {
 }
 
 function parseRule(ruleStr: string): Rule {
-    const [leftPart, rightPart] = ruleStr.split(' | ');
-    if (!rightPart) {
-        return {type: "single", inner: parseSimpleRule(leftPart)};
+    const parts = ruleStr.split(' | ');
+    if (parts.length === 1) {
+        return {type: "single", inner: parseSimpleRule(parts[0])};
     } else {
-        return {type: "either", rules: [parseSimpleRule(leftPart), parseSimpleRule(rightPart)]};
+        return {type: "either", rules: parts.map(parseSimpleRule)};
     }
 }
 
