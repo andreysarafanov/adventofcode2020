@@ -606,4 +606,9 @@ babbbbbbaaababbbbaaabbaa
 bbbbabbaabaaaabbaabbabaababbbbaabbabaabbbbbabbbbabbabaab
 baaaabbbaaaaabbbaababbaa`;
 
+// lines.split('\n').forEach(line => {
+//     const isCorrect = countValidStrings(ruleInput, line) === 1;
+//     console.log(`${isCorrect} - "${line}"`)
+// })
+
 console.log(countValidStrings(ruleInput, lines));
