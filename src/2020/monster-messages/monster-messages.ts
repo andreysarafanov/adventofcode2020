@@ -57,12 +57,14 @@ function checkShortConcatRule(line: string, from: number, to: number, rule: Conc
 }
 
 function checkLongConcatRule(line: string, from: number, to: number, rule: ConcatRule, allRules: RuleByKey): boolean {
-    // no letter rules here
+    if (rule.parts.length === 2) {
+        return checkShortConcatRule(line, from, to, rule, allRules);
+    }
 
     const leftRule = allRules[rule.parts[0]];
-    const rightRule: Rule = {type: "single", inner: {type: "concat", parts: rule.parts.slice(1)}};
+    const rightRule: ConcatRule = {type: "concat", parts: rule.parts.slice(1)};
     for (let i = from; i < to; i++) {
-        if (checkRule(line, from, i, leftRule, allRules) && checkRule(line, i+1, to, rightRule, allRules)) {
+        if (checkRule(line, from, i, leftRule, allRules) && checkConcatRule(line, i+1, to, rightRule, allRules)) {
             return true;
         }
     }
@@ -99,10 +101,10 @@ function parseSimpleRule(ruleStr: string): SimpleRule {
     if (ruleStr[0] === '"') {
         return {type: "letter", letter: ruleStr[1]};
     }
-    const [leftPart, rightPart] = ruleStr.split(' ');
-    if (!rightPart) {
-        return {type: "redirect", redirectTo: +leftPart};
+    const parts = ruleStr.split(' ');
+    if (parts.length === 1) {
+        return {type: "redirect", redirectTo: +parts[0]};
     } else {
-        return {type: "concat", parts: [+leftPart, +rightPart]};
+        return {type: "concat", parts: parts.map(p => +p)};
     }
 }
