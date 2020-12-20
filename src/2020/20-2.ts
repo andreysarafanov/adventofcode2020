@@ -1,4 +1,4 @@
-import { getNonPassingBorderCounts } from "./jurassic-jigsaw/jurassic-jigsaw-1";
+import { calculateWaterRoughnessByImage } from "./jurassic-jigsaw/jurassic-jigsaw-2";
 
 const input = `Tile 3923:
 ...##.....
@@ -1727,8 +1727,5 @@ Tile 3769:
 #...##...#
 ###.#.#.#.
 .##..##...`;
-const result = getNonPassingBorderCounts(input);
-console.log(`corner: ${result.filter(v => v.value === 2).length}`);
-console.log(`side: ${result.filter(v => v.value === 1).length}`);
-console.log(`non obvious: ${result.filter(v => v.matchesByBorder.some(m => m > 1)).length}`);
-console.log(JSON.stringify(getNonPassingBorderCounts(input), null, 2));
+
+console.log(calculateWaterRoughnessByImage(input));

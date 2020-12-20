@@ -1,21 +1,27 @@
 export function getNonPassingBorderCounts(input: string) {
     const bordersById = parseInput(input);
-    let result = new Array<{id: number, value: number}>()
+    let result = new Array<{id: number, value: number, matchesByBorder: number[]}>()
     for (let [idStr, borders] of Object.entries(bordersById)) {
         const id = +idStr;
-        const resultLine = {id, value: 0};
+        const resultLine = {id, value: 0, matchesByBorder: new Array<number>()};
         for (let border of borders) {
-            const exists = Object.entries(bordersById).some(([key, values]) => {
-                return key !== idStr && (values.indexOf(border) !== -1 || values.indexOf(border.split('').reverse().join(''))) !== -1
-            });
-            if (!exists) {
+            const matches = Object.entries(bordersById).filter(([key, values]) => {
+                return key !== idStr && (values.indexOf(border) !== -1 || values.indexOf(reverse(border))) !== -1
+            }).length;
+            if (matches === 0) {
                 resultLine.value += 1;
             }
+            resultLine.matchesByBorder.push(matches);
+
         }
         result.push(resultLine);
     }
     result = result.sort((a, b) => a.value - b.value);
     return result;
+}
+
+function reverse(str: string): string {
+    return str.split('').reverse().join('');
 }
 
 function parseInput(input: string): {[id: number]: string[]} {
